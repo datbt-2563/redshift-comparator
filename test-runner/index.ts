@@ -57,21 +57,17 @@ export type ExecuteTestSuiteResult = ExecuteResult & { testSuiteName: string };
 export const assignLabelForResults = (results: any[]): string[] => {
   const labels: string[] = [];
   const uniqueMap = new Map<string, string>();
-  let currentLabel = "A";
+  let currentLabel = "R1";
 
   results.forEach((result, index) => {
-    const resultString = JSON.stringify(result); // Chuyển object thành chuỗi để so sánh dễ dàng
-
-    // Nếu result đã có trong uniqueMap, sử dụng label đã gán
-    if (uniqueMap.has(resultString)) {
-      labels[index] = uniqueMap.get(resultString)!;
+    const resultStr = JSON.stringify(result);
+    if (uniqueMap.has(resultStr)) {
+      labels[index] = uniqueMap.get(resultStr)!;
     } else {
-      // Nếu result là duy nhất, gán label mới và lưu vào map
-      uniqueMap.set(resultString, currentLabel);
+      uniqueMap.set(resultStr, currentLabel);
       labels[index] = currentLabel;
 
-      // Tăng ký tự label tiếp theo (A -> B -> C ...)
-      currentLabel = String.fromCharCode(currentLabel.charCodeAt(0) + 1);
+      currentLabel = `R${parseInt(currentLabel.slice(1)) + 1}`;
     }
   });
 
@@ -84,15 +80,12 @@ export const assignLabelForQuery = (sqls: string[]): string[] => {
   let currentLabel = "Q1";
 
   sqls.forEach((sql, index) => {
-    // Nếu sql đã có trong uniqueMap, sử dụng label đã gán
     if (uniqueMap.has(sql)) {
       labels[index] = uniqueMap.get(sql)!;
     } else {
-      // Nếu sql là duy nhất, gán label mới và lưu vào map
       uniqueMap.set(sql, currentLabel);
       labels[index] = currentLabel;
 
-      // Tăng ký tự label tiếp theo (Q1 -> Q2 -> Q3 ...)
       currentLabel = `Q${parseInt(currentLabel.slice(1)) + 1}`;
     }
   });
@@ -118,7 +111,7 @@ export const executeTestSuites = async (
   const sqlResults = allTestResults.map((result) => result.result);
   const labelResults = assignLabelForResults(sqlResults);
 
-  const sqls = sqlResults.map((result) => result.sql);
+  const sqls = allTestResults.map((result) => result.sql);
   const labelSqls = assignLabelForQuery(sqls);
 
   const tables = allTestResults.map((result, index) => {
