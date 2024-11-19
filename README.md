@@ -4,6 +4,14 @@ Tool to compare result and time execution of two queries in Redshift or 1 query 
 
 ## Description
 
+Menu: 
+
+- Build SQL query 
+- Build test case
+- Execute test case
+- Analyze test results
+
+
 ### Modules
 
 1. **Configuration** → Prepares input data such as queries, parameters and RedShift clusters.
@@ -30,3 +38,6 @@ A test case in the Redshift Comparator system evaluates the performance and accu
 | - Execution Time       | Time taken to execute the query.                  |
 
 
+### Step
+
+1. Build test case
