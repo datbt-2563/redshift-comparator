@@ -1,0 +1,11 @@
+{
+  "name": "redshift-comparator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "Tool to compare result and time execution of two queries in Redshift or 1 query in multiple Redshift clusters"
+}
