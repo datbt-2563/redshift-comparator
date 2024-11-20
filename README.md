@@ -41,3 +41,24 @@ A test case in the Redshift Comparator system evaluates the performance and accu
 ### Step
 
 1. Build test case
+...
+
+
+### How to test
+
+1. Start docker compose
+
+```
+yarn install
+
+cd temp
+docker build -t mysql-with-seed .
+docker-compose up -d
+```
+
+
+2. Execute test suites
+
+```
+yarn execute
+```
