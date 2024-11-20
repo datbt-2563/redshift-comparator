@@ -39,7 +39,7 @@ export const executeTestSuite = async (
 
     const tables = testResults.map((result, index) => {
       return {
-        name: `Test ${index + 1}`,
+        // name: `Test ${index + 1}`,
         cluster: result.clusterName,
         label: labels[index],
         timeInMs: result.timeInMs,
@@ -118,10 +118,12 @@ export const executeTestSuites = async (
     return {
       name: `Test ${index + 1}`,
       testSuite: result.testSuiteName,
-      sql: labelSqls[index],
-      resultLabel: labelResults[index],
       cluster: result.clusterName,
-      timeInMs: Math.round(result.timeInMs),
+      query: sqls[index],
+      queryLabel: labelSqls[index],
+      result: sqlResults[index],
+      resultLabel: labelResults[index],
+      timeExecuteInMs: result.timeInMs,
     };
   });
 
@@ -152,10 +154,43 @@ const execute = async () => {
     },
   ];
 
-  // await executeTestSuite(testsuite1, true);
-  // await executeTestSuite(testsuite2, true);
+  const testsuite3: TestSuite = [
+    {
+      sqlQueryName: "Get 50 first org",
+      targetCluster: "cluster1",
+    },
+    {
+      sqlQueryName: "Get 100 first org",
+      targetCluster: "cluster2",
+    },
+  ];
 
-  await executeTestSuites([testsuite1, testsuite2], true);
+  const testsuite4: TestSuite = [
+    {
+      sqlQueryName: "Get 20 first org",
+      targetCluster: "cluster1",
+    },
+    {
+      sqlQueryName: "Get 30 first org",
+      targetCluster: "cluster2",
+    },
+  ];
+
+  const testsuite5: TestSuite = [
+    {
+      sqlQueryName: "Get 30 first org",
+      targetCluster: "cluster1",
+    },
+    {
+      sqlQueryName: "Get 50 first org",
+      targetCluster: "cluster2",
+    },
+  ];
+
+  await executeTestSuites(
+    [testsuite1, testsuite2, testsuite3, testsuite4, testsuite5],
+    true
+  );
 };
 
 execute();

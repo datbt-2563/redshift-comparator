@@ -23,6 +23,18 @@ export const sqlQueries: SQLQuery[] = [
     query: "SELECT * FROM org LIMIT 10",
   },
   {
+    name: "Get 20 first org",
+    query: "SELECT * FROM org LIMIT 20",
+  },
+  {
+    name: "Get 30 first org",
+    query: "SELECT * FROM org LIMIT 20",
+  },
+  {
+    name: "Get 50 first org",
+    query: "SELECT * FROM org LIMIT 20",
+  },
+  {
     name: "Get 100 first org",
     query: "SELECT * FROM org LIMIT 100",
   },
