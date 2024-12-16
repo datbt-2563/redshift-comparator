@@ -8,6 +8,14 @@ import {
 import { log } from "console";
 import { escapeCSVField } from "helper";
 
+const getLambdaNameFromJsonPath = (jsonPath: string): string => {
+  // jsonPath: logs/display-log/prd-coupon-InvokeCouponDisplayLog-function.json
+  // return: prd-coupon-InvokeCouponDisplayLog-function
+
+  const split = jsonPath.split("/");
+  return split[split.length - 1].split(".")[0];
+};
+
 const analyzeQuery = (
   config: QueryConfig
 ): {
@@ -90,6 +98,10 @@ const analyzeQuery = (
 const main = async () => {
   const result: {
     alias: string;
+    name: string;
+    jsonPath: string;
+    lambdaName: string;
+    functionName: string;
     matchCount: number;
     total: number;
     filePath: string;
@@ -117,6 +129,10 @@ const main = async () => {
 
     result.push({
       alias: config.alias,
+      name: config.name,
+      lambdaName: getLambdaNameFromJsonPath(config.jsonPath),
+      jsonPath: config.jsonPath,
+      functionName: config.functionName,
       matchCount: res.matchCount,
       total: res.total,
       proportion: Math.round((res.matchCount / res.total) * 100),
@@ -138,17 +154,22 @@ const main = async () => {
   console.log("Results:");
   console.table(result);
 
+  // Write result to a csv file
+
+  const overviewResultFilePath = "logs/data/overview.csv";
+  let order = 1;
+  let resultCsv =
+    "no,alias,name,lambdaName,functionName,matchCount,total,proportion,firstMatchTimestamp,lastMatchTimestamp,firstNotMatchTimestamp,lastNotMatchTimestamp,filePath\n";
+  result.forEach((res) => {
+    resultCsv += `${order},${res.alias},${res.name},${res.lambdaName},${res.functionName},${res.matchCount},${res.total},${res.proportion}%,${res.firstMatchTimestamp},${res.lastMatchTimestamp},${res.firstNotMatchTimestamp},${res.lastNotMatchTimestamp},${res.filePath}\n`;
+    order++;
+  });
+
+  fs.writeFileSync(overviewResultFilePath, resultCsv);
+
   //  Write full logs to a file
   const fullLogsFilePath = "logs/data/full-logs.csv";
   let no = 1;
-
-  const getLambdaNameFromJsonPath = (jsonPath: string): string => {
-    // jsonPath: logs/display-log/prd-coupon-InvokeCouponDisplayLog-function.json
-    // return: prd-coupon-InvokeCouponDisplayLog-function
-
-    const split = jsonPath.split("/");
-    return split[split.length - 1].split(".")[0];
-  };
 
   let fullLogsCsv =
     "no,alias,name,lambda,functionName,isMatching,timestamp,shortSQL,fullSQL\n";

@@ -3,7 +3,7 @@ export interface QueryConfig {
   name: string;
   jsonPath: string;
   match: string;
-  functionName?: string;
+  functionName: string;
 }
 
 export const queryConfig: QueryConfig[] = [
