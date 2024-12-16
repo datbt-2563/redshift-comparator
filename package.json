@@ -5,16 +5,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx tsx index.ts",
+    "get-log": "npx tsx get-log.ts",
+    "ana": "npx tsx analyze-log.ts",
+    "query": "npx tsx analyze-query.ts",
+    "group": "npx tsx group-by.ts",
     "execute": "npx tsx ./test-runner/index.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "Tool to compare result and time execution of two queries in Redshift or 1 query in multiple Redshift clusters",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.712.0",
     "@types/chalk": "^2.2.4",
     "@types/node": "20",
     "@types/prompts": "^2.4.9",
     "chalk": "^5.3.0",
+    "csv-parser": "^3.0.0",
     "mysql2": "^3.11.4",
     "prompts": "^2.4.2",
     "tsx": "^4.19.2"
