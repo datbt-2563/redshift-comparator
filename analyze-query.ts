@@ -136,17 +136,13 @@ const main = async () => {
       matchCount: res.matchCount,
       total: res.total,
       proportion: Math.round((res.matchCount / res.total) * 100),
-      firstMatchTimestamp: new Date(
-        res.firstMatchTimestamp
-      ).toLocaleDateString(),
+      firstMatchTimestamp: new Date(res.firstMatchTimestamp).toISOString(),
 
-      lastMatchTimestamp: new Date(res.lastMatchTimestamp).toLocaleDateString(),
+      lastMatchTimestamp: new Date(res.lastMatchTimestamp).toISOString(),
       firstNotMatchTimestamp: new Date(
         res.firstNotMatchTimestamp
-      ).toLocaleDateString(),
-      lastNotMatchTimestamp: new Date(
-        res.lastNotMatchTimestamp
-      ).toLocaleDateString(),
+      ).toISOString(),
+      lastNotMatchTimestamp: new Date(res.lastNotMatchTimestamp).toISOString(),
       filePath: res.filePath,
     });
   }
@@ -180,7 +176,7 @@ const main = async () => {
       log.queryConfig.functionName
     },${log.isMatch ? 1 : 0},${new Date(
       log.timestamp
-    ).toLocaleDateString()},${escapeCSVField(log.shortSQL)},${escapeCSVField(
+    ).toISOString()},${escapeCSVField(log.shortSQL)},${escapeCSVField(
       log.fullSQL
     )}\n`;
     no++;
