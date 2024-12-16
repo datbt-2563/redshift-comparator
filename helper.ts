@@ -6,3 +6,11 @@ export const escapeCSVField = (field) => {
   }
   return field;
 };
+
+export const getLambdaNameFromJsonPath = (jsonPath: string): string => {
+  // jsonPath: logs/display-log/prd-coupon-InvokeCouponDisplayLog-function.json
+  // return: prd-coupon-InvokeCouponDisplayLog-function
+
+  const split = jsonPath.split("/");
+  return split[split.length - 1].split(".")[0];
+};

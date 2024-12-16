@@ -1,6 +1,7 @@
 import fs from "fs";
 import csvParser from "csv-parser";
-import { escapeCSVField } from "helper";
+import { escapeCSVField, getLambdaNameFromJsonPath } from "helper";
+import { queryConfig } from "config";
 
 interface Record {
   no: string;
@@ -57,14 +58,20 @@ function sortAndGroupByShortSQL(
   return groupedData;
 }
 
+const getConfig = (queryPattern: string) => {
+  return queryConfig.find((config) => config.alias === queryPattern);
+};
+
 // Sử dụng hàm
 async function main() {
   let no = 1;
-  let csv = `no,queryPattern,queryAlias,fullSQL,shortSQL,count\n`;
+  let csv = `no,queryPattern,queryName,lambdaFunctionName,sourceCodeFunctionName,queryAlias,fullSQL,shortSQL,count\n`;
 
   for (let i = 0; i < 10; i++) {
     try {
       const queryPattern = `Q${i + 1}`;
+      const cnf = getConfig(queryPattern);
+
       const filePath = `logs/data/${queryPattern}.csv`;
       const records = await readCSV(filePath);
       const groupedData = sortAndGroupByShortSQL(records, queryPattern);
@@ -73,7 +80,11 @@ async function main() {
 
       top10.forEach((grouped, index) => {
         const queryAlias = `${queryPattern}_${index + 1}`;
-        csv += `${no},${grouped.queryPattern},${queryAlias},${escapeCSVField(
+        csv += `${no},${grouped.queryPattern},${
+          cnf?.name
+        },${getLambdaNameFromJsonPath(cnf?.jsonPath)},${
+          cnf?.functionName
+        },${queryAlias},${escapeCSVField(
           grouped.records[0].fullSQL
         )},${escapeCSVField(grouped.shortSQL)},${grouped.count}\n`;
         no++;

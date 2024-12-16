@@ -6,15 +6,7 @@ import {
   FullAnalyzingResult,
 } from "./analyze-log";
 import { log } from "console";
-import { escapeCSVField } from "helper";
-
-const getLambdaNameFromJsonPath = (jsonPath: string): string => {
-  // jsonPath: logs/display-log/prd-coupon-InvokeCouponDisplayLog-function.json
-  // return: prd-coupon-InvokeCouponDisplayLog-function
-
-  const split = jsonPath.split("/");
-  return split[split.length - 1].split(".")[0];
-};
+import { escapeCSVField, getLambdaNameFromJsonPath } from "helper";
 
 const analyzeQuery = (
   config: QueryConfig
