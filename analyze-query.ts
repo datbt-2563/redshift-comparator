@@ -1,4 +1,4 @@
-import { queryConfig, QueryConfig } from "config";
+import { queryConfig, QueryConfig } from "get-logs/config";
 import * as fs from "fs";
 import {
   analyzeLog,
@@ -6,7 +6,7 @@ import {
   FullAnalyzingResult,
 } from "./analyze-log";
 import { log } from "console";
-import { escapeCSVField, getLambdaNameFromJsonPath } from "helper";
+import { escapeCSVField, getLambdaNameFromJsonPath } from "get-logs/helper";
 
 const analyzeQuery = (
   config: QueryConfig

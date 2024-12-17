@@ -1,4 +1,4 @@
-import { QueryConfig } from "config";
+import { QueryConfig } from "get-logs/config";
 
 export interface AnalyzingLogResult {
   timestamp: number;

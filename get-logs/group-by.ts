@@ -1,7 +1,7 @@
 import fs from "fs";
 import csvParser from "csv-parser";
-import { escapeCSVField, getLambdaNameFromJsonPath } from "helper";
-import { queryConfig } from "config";
+import { escapeCSVField, getLambdaNameFromJsonPath } from "get-logs/helper";
+import { queryConfig } from "get-logs/config";
 
 interface Record {
   no: string;
