@@ -1,6 +1,5 @@
 export interface Cluster {
   name: string;
-
   user: string;
   host: string;
   database: string;
