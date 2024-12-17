@@ -1,4 +1,4 @@
-import { getClusterConfig } from "configuration/target-cluster";
+import { getClusterConfig } from "src/configuration/target-cluster";
 import mysql from "mysql2/promise";
 
 export interface ExecuteResult {

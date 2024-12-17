@@ -1,6 +1,6 @@
-import { TestSuite } from "storage/test-case/test-case";
+import { TestSuite } from "src/storage/test-case/test-case";
 import { executeQuery, ExecuteResult } from "./client";
-import { getSQLQuery } from "storage/sql-query";
+import { getSQLQuery } from "src/storage/sql-query";
 
 export const executeTestSuite = async (
   testsuite: TestSuite,

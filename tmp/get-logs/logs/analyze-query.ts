@@ -4,7 +4,7 @@ import {
   analyzeLog,
   AnalyzingLogResult,
   FullAnalyzingResult,
-} from "./analyze-log";
+} from "../../../analyze-log";
 import { log } from "console";
 import { escapeCSVField, getLambdaNameFromJsonPath } from "get-logs/helper";
 

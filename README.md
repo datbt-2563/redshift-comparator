@@ -6,8 +6,6 @@ Tool to compare result and time execution of two queries in Redshift or 1 query 
 
 Menu: 
 
-- Build SQL query 
-- Build test case
 - Execute test case
 - Analyze test results
 
