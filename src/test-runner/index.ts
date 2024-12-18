@@ -5,11 +5,15 @@ import {
 } from "./client";
 
 const main = async () => {
-  const sqlQuery = `SELECT 
-    organizationid, 
-    couponmasterid
-FROM public.coupon_logs
-LIMIT 10`;
+  //   const sqlQuery = `SELECT
+  //     organizationid,
+  //     couponmasterid
+  // FROM public.coupon_logs
+  // LIMIT 10`;
+
+  const sqlQuery = `SELECT schema_name 
+FROM information_schema.schemata;`;
+
   const { queryExecutionId } = await invokeQuery(sqlQuery);
 
   console.log("queryExecutionId", queryExecutionId);
