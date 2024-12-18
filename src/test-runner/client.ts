@@ -76,6 +76,8 @@ export async function redshiftStatusPollerOnce(input: {
   const command = new DescribeStatementCommand(describeStatementCommandInput);
   const response = await redshiftDataClient.send(command);
 
+  console.log("Query Status:", response);
+
   const status = response.Status;
   const query = response.QueryString;
   if (!status || !query) {
