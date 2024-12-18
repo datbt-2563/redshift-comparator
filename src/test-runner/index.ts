@@ -1,46 +1,22 @@
-import {
-  getQueryResult,
-  invokeQuery,
-  redshiftStatusPollerOnce,
-} from "./client";
+import { query } from "./client";
 
 import dotenv from "dotenv";
 dotenv.config();
 
 const main = async () => {
-  const sqlQuery2 = `SELECT
+  const sqls = [
+    `SELECT current_database();`,
+    `SELECT schema_name FROM information_schema.schemata;`,
+    `SELECT
       organizationid,
       couponmasterid
   FROM public.coupon_logs
-  LIMIT 10`;
+  LIMIT 10`,
+  ];
 
-  console.log(process.env.COUPON_REDSHIFT_USER_SECRET_ARN);
-
-  const sqlQuery1 = `SELECT schema_name FROM information_schema.schemata;`;
-
-  const { queryExecutionId } = await invokeQuery(sqlQuery2);
-
-  console.log("queryExecutionId", queryExecutionId);
-
-  for (let i = 0; i < 20; i++) {
-    const { status, outputLocation } = await redshiftStatusPollerOnce({
-      queryExecutionId,
-    });
-
-    console.log("status", status);
-    console.log("outputLocation", outputLocation);
-
-    if (status === "SUCCEEDED") {
-      const res = await getQueryResult(queryExecutionId);
-      console.log("res", res);
-      break;
-    }
-
-    if (status === "FAILED") {
-      break;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  for (const sql of sqls) {
+    const result = await query(sql);
+    console.log(result);
   }
 };
 

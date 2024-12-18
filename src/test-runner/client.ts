@@ -123,3 +123,30 @@ export async function getQueryResult(queryExecutionId: string) {
   const result = await redshiftDataClient.send(resultCommand);
   console.log("Query Result:", result.Records);
 }
+
+export const query = async (sql: string) => {
+  const { queryExecutionId } = await invokeQuery(sql);
+
+  console.log("queryExecutionId", queryExecutionId);
+
+  for (let i = 0; i < 20; i++) {
+    const { status, outputLocation } = await redshiftStatusPollerOnce({
+      queryExecutionId,
+    });
+
+    console.log("status", status);
+    console.log("outputLocation", outputLocation);
+
+    if (status === "SUCCEEDED") {
+      const res = await getQueryResult(queryExecutionId);
+      console.log("res", res);
+      break;
+    }
+
+    if (status === "FAILED") {
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+};
