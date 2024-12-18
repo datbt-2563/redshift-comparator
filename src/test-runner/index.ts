@@ -4,12 +4,17 @@ import {
   redshiftStatusPollerOnce,
 } from "./client";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const main = async () => {
   const sqlQuery2 = `SELECT
       organizationid,
       couponmasterid
-  FROM coupon_logs
+  FROM public.coupon_logs
   LIMIT 10`;
+
+  console.log(process.env.COUPON_REDSHIFT_USER_SECRET_ARN);
 
   const sqlQuery1 = `SELECT schema_name FROM information_schema.schemata;`;
 

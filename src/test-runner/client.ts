@@ -24,8 +24,8 @@ export async function invokeQuery(
   const command = new ExecuteStatementCommand({
     ClusterIdentifier: config.clusterIdentifier,
     Database: config.database,
-    DbUser: config.dbUser,
     Sql: sql,
+    SecretArn: process.env.COUPON_REDSHIFT_USER_SECRET_ARN,
   });
 
   const request = await redshiftDataClient.send(command);
