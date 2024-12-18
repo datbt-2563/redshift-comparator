@@ -1,38 +1,21 @@
-export interface Cluster {
-  name: string;
-  user: string;
-  host: string;
+export interface ClusterConfig {
+  clusterName: string;
+  region: string;
+  clusterIdentifier: string;
   database: string;
-  password: string;
-  port: number;
+  dbUser: string;
 }
 
-export const clusters: Cluster[] = [
+export const clusters: ClusterConfig[] = [
   {
-    name: "cluster1",
-    host: "localhost",
-    port: 4000,
-    user: "root",
-    password: "rootpassword",
-    database: "mydatabase",
-  },
-  {
-    name: "cluster2",
-    host: "localhost",
-    port: 4001,
-    user: "root",
-    password: "rootpassword",
-    database: "mydatabase",
+    clusterName: "dev-cluster",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster",
+    database: "dev",
+    dbUser: "admin",
   },
 ];
 
-export const getClusterConfig = (clusterName: string): Partial<Cluster> => {
-  const config = clusters.find((cluster) => cluster.name === clusterName);
-  return {
-    host: config.host,
-    port: config.port,
-    user: config.user,
-    password: config.password,
-    database: config.database,
-  };
+export const getClusterConfig = (clusterName: string): ClusterConfig => {
+  return clusters.find((cluster) => cluster.clusterName === clusterName);
 };

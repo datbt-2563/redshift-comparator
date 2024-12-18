@@ -9,7 +9,7 @@
     "ana": "npx tsx analyze-log.ts",
     "query": "npx tsx analyze-query.ts",
     "group": "npx tsx group-by.ts",
-    "execute": "npx tsx ./test-runner/index.ts"
+    "execute": "npx tsx ./src/test-runner/index.ts"
   },
   "author": "",
   "license": "ISC",

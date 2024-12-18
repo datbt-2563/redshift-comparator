@@ -1,27 +1,38 @@
+import { QueryStatus } from "@aws-sdk/client-cloudwatch-logs";
 import {
+  DescribeStatementCommand,
+  DescribeStatementCommandInput,
   ExecuteStatementCommand,
+  GetStatementResultCommand,
   RedshiftDataClient,
 } from "@aws-sdk/client-redshift-data";
 import { getClusterConfig } from "src/configuration/redshift-cluster";
 
-const config = { region: Region };
-const redshiftDataClient = new RedshiftDataClient(config);
+// TODO: get information of current cluster by querying system tables
 
-export async function invokeQuery(sql: string): Promise<InvokeQueryResult> {
+const config = getClusterConfig("dev-cluster");
+
+const redshiftDataClient = new RedshiftDataClient({
+  region: config.region,
+});
+
+export async function invokeQuery(
+  sql: string
+): Promise<{ queryExecutionId: string }> {
   console.info("sql", sql);
 
-  const input = {
-    Database: COUPON_REDSHIFT_DATABASE_NAME,
-    ClusterIdentifier: COUPON_REDSHIFT_CLUSTER_ID,
+  const command = new ExecuteStatementCommand({
+    ClusterIdentifier: config.clusterIdentifier,
+    Database: config.database,
+    DbUser: config.dbUser,
     Sql: sql,
-    SecretArn: COUPON_REDSHIFT_USER_SECRET_ARN,
-  };
-  const command = new ExecuteStatementCommand(input);
+  });
+
   const request = await redshiftDataClient.send(command);
 
   const requestId = request.Id;
   if (!requestId) {
-    throw new CouponUsageUnknownError(new Error("requestId is empty"));
+    throw new Error("Failed to execute query");
   }
 
   return { queryExecutionId: requestId };
@@ -52,7 +63,11 @@ async function extractOutputLocation(
  */
 export async function redshiftStatusPollerOnce(input: {
   queryExecutionId: string;
-}): Promise<QueryStatus> {
+}): Promise<{
+  queryExecutionId: string;
+  status: string;
+  outputLocation?: string;
+}> {
   const queryExecutionId = input.queryExecutionId;
   const describeStatementCommandInput: DescribeStatementCommandInput = {
     Id: queryExecutionId,
@@ -64,7 +79,7 @@ export async function redshiftStatusPollerOnce(input: {
   const status = response.Status;
   const query = response.QueryString;
   if (!status || !query) {
-    throw new CouponUsageUnknownError(new Error(response.Error));
+    throw new Error("Failed to get query status");
   }
 
   // フロント側で扱いやすいように変換する
@@ -97,18 +112,12 @@ export async function redshiftStatusPollerOnce(input: {
   };
 }
 
-/**
- * SQL 実行のメタ情報を返します
- * @param queryExecutionId
- */
-export async function redshiftSqlResult(
-  queryExecutionId: string
-): Promise<GetStatementResultCommandOutput> {
-  // 現状件数を指定して取得する方法がないため、とりあえず全件取得する実装
-  const getStatementResultCommandInput: GetStatementResultCommandInput = {
+export async function getQueryResult(queryExecutionId: string) {
+  // Lấy kết quả của truy vấn
+  const resultCommand = new GetStatementResultCommand({
     Id: queryExecutionId,
-  };
-  const command = new GetStatementResultCommand(getStatementResultCommandInput);
+  });
 
-  return await redshiftDataClient.send(command);
+  const result = await redshiftDataClient.send(resultCommand);
+  console.log("Query Result:", result.Records);
 }
