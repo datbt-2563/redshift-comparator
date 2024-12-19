@@ -23,7 +23,7 @@ const main = async () => {
   // Get data from ./configuration/test-case.json
   const testCases = require("../configuration/test-case.json") as TestCase[];
 
-  console.log(testCases);
+  // console.log(testCases);
 
   for (const testCase of testCases) {
     // Replace \" with "
@@ -33,6 +33,7 @@ const main = async () => {
     const result = await executeQuery(testCase.fullSQL);
     console.log(`Done`);
     console.log(result.duration);
+    console.log(result.result);
     break;
   }
 };
