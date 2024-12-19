@@ -37,7 +37,7 @@ const main = async () => {
 
     // if SQL contain "UNLOAD", skip
 
-    if (testCase.fullSQL.includes("UNLOAD")) {
+    if (testCase.fullSQL.toLocaleLowerCase().includes("unload")) {
       console.log("Skip UNLOAD query");
       continue;
     }
