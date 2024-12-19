@@ -120,6 +120,7 @@ export const executeQuery = async (
   sql: string
 ): Promise<{
   status: string;
+  queryExecutionId: string;
   durationInMs?: number;
   outputLocation?: string;
   result?: Field[][];
@@ -147,6 +148,7 @@ export const executeQuery = async (
     if (status === "FINISHED") {
       const result = await getQueryResult(queryExecutionId);
       return {
+        queryExecutionId,
         status,
         outputLocation,
         result: result,
@@ -156,6 +158,7 @@ export const executeQuery = async (
 
     if (status === "FAILED") {
       return {
+        queryExecutionId,
         status,
         outputLocation,
       };

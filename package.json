@@ -16,6 +16,7 @@
   "description": "Tool to compare result and time execution of two queries in Redshift or 1 query in multiple Redshift clusters",
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.712.0",
+    "@aws-sdk/client-dynamodb": "^3.714.0",
     "@aws-sdk/client-redshift-data": "^3.713.0",
     "@types/chalk": "^2.2.4",
     "@types/node": "20",
