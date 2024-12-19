@@ -1,5 +1,5 @@
 import { executeQuery } from "./client";
-
+import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -24,18 +24,43 @@ const main = async () => {
   const testCases = require("../configuration/test-case.json") as TestCase[];
 
   // console.log(testCases);
+  const tables: {
+    queryAlias: string;
+    durationInMs: number;
+  }[] = [];
 
   for (const testCase of testCases) {
+    console.log(`Executing ${testCase.queryAlias}...`);
     // Replace \" with "
     testCase.fullSQL = testCase.fullSQL.replace(/\\"/g, '"').trim();
-    console.log("Executing SQL:", testCase.fullSQL);
+    // console.log("Executing SQL:", testCase.fullSQL);
 
     const result = await executeQuery(testCase.fullSQL);
-    console.log(`Done`);
+    // console.log(`Done`);
     console.log(result.durationInMs);
     // console.log(result.result);
-    break;
+    tables.push({
+      queryAlias: testCase.queryAlias,
+      durationInMs: result.durationInMs,
+    });
+
+    // sleep 1s
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
+
+  console.log(tables);
+
+  // Write to a file
+  fs.writeFileSync("tables.json", JSON.stringify(tables, null, 2));
+
+  // Total time
+  const totalDuration = tables.reduce(
+    (acc, table) => acc + table.durationInMs,
+    0
+  );
+  console.log("Total duration:", totalDuration);
+  const averageTime = totalDuration / tables.length;
+  console.log("Average time:", averageTime);
 };
 
 main();
