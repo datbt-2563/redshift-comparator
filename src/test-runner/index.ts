@@ -11,7 +11,7 @@ const main = async () => {
   for (const sql of sqls) {
     console.log("Executing SQL:", sql);
     const result = await executeQuery(sql);
-    // console.log(result);
+    console.log(result);
   }
 };
 
