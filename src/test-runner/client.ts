@@ -113,13 +113,6 @@ export async function getQueryResult(
   });
 
   const result = await redshiftDataClient.send(resultCommand);
-
-  const result2 = result;
-  delete result2.Records;
-  console.log(`result send`);
-  console.log(result2);
-
-  // console.log("Query Result:", result.Records);
   return result.Records;
 }
 
