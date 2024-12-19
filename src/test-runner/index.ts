@@ -33,7 +33,7 @@ const main = async () => {
     const result = await executeQuery(testCase.fullSQL);
     console.log(`Done`);
     console.log(result.durationInMs);
-    console.log(result.result);
+    // console.log(result.result);
     break;
   }
 };
