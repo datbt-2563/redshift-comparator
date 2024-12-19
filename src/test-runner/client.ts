@@ -120,7 +120,7 @@ export const executeQuery = async (
   sql: string
 ): Promise<{
   status: string;
-  duration?: number;
+  durationInMs?: number;
   outputLocation?: string;
   result?: Field[][];
 }> => {
@@ -146,7 +146,12 @@ export const executeQuery = async (
 
     if (status === "FINISHED") {
       const result = await getQueryResult(queryExecutionId);
-      return { status, outputLocation, result: result, duration };
+      return {
+        status,
+        outputLocation,
+        result: result,
+        durationInMs: Math.round(duration / 1000000),
+      };
     }
 
     if (status === "FAILED") {
