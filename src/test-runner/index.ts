@@ -75,7 +75,7 @@ const startNewCampaign = async (note?: string) => {
   // console.log(tables);
 
   // Write to a file
-  fs.writeFileSync("tables.json", JSON.stringify(tables, null, 2));
+  // fs.writeFileSync("tables.json", JSON.stringify(tables, null, 2));
 
   // Total time
   const totalDuration = tables.reduce(
