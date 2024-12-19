@@ -1,4 +1,4 @@
-import { query } from "./client";
+import { executeQuery } from "./client";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -9,7 +9,8 @@ const main = async () => {
   ];
 
   for (const sql of sqls) {
-    const result = await query(sql);
+    console.log("Executing SQL:", sql);
+    const result = await executeQuery(sql);
     console.log(result);
   }
 };

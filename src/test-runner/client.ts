@@ -3,6 +3,7 @@ import {
   DescribeStatementCommand,
   DescribeStatementCommandInput,
   ExecuteStatementCommand,
+  Field,
   GetStatementResultCommand,
   RedshiftDataClient,
 } from "@aws-sdk/client-redshift-data";
@@ -76,8 +77,6 @@ export async function redshiftStatusPollerOnce(input: {
   const command = new DescribeStatementCommand(describeStatementCommandInput);
   const response = await redshiftDataClient.send(command);
 
-  console.log("Query Status:", response);
-
   const status = response.Status;
   const query = response.QueryString;
   if (!status || !query) {
@@ -114,7 +113,9 @@ export async function redshiftStatusPollerOnce(input: {
   };
 }
 
-export async function getQueryResult(queryExecutionId: string) {
+export async function getQueryResult(
+  queryExecutionId: string
+): Promise<Field[][]> {
   // Lấy kết quả của truy vấn
   const resultCommand = new GetStatementResultCommand({
     Id: queryExecutionId,
@@ -122,31 +123,46 @@ export async function getQueryResult(queryExecutionId: string) {
 
   const result = await redshiftDataClient.send(resultCommand);
   console.log("Query Result:", result.Records);
+  return result.Records;
 }
 
-export const query = async (sql: string) => {
+export const executeQuery = async (
+  sql: string
+): Promise<{
+  status: string;
+  outputLocation?: string;
+  result?: Field[][];
+}> => {
   const { queryExecutionId } = await invokeQuery(sql);
 
-  console.log("queryExecutionId", queryExecutionId);
+  const MAX_TIMEOUT = 1000 * 60 * 5; // 5 minutes
+  const BREAK_TIME = 1000 * 3; // 3 seconds
 
-  for (let i = 0; i < 20; i++) {
+  const startTime = Date.now();
+
+  while (true) {
+    if (Date.now() - startTime > MAX_TIMEOUT) {
+      break;
+    }
+
     const { status, outputLocation } = await redshiftStatusPollerOnce({
       queryExecutionId,
     });
 
-    console.log("status", status);
-    console.log("outputLocation", outputLocation);
+    console.log("- status", status);
 
     if (status === "SUCCEEDED") {
-      const res = await getQueryResult(queryExecutionId);
-      console.log("res", res);
-      break;
+      const result = await getQueryResult(queryExecutionId);
+      return { status, outputLocation, result: result };
     }
 
     if (status === "FAILED") {
-      break;
+      return {
+        status,
+        outputLocation,
+      };
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, BREAK_TIME));
   }
 };
