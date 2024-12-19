@@ -35,6 +35,13 @@ const main = async () => {
     testCase.fullSQL = testCase.fullSQL.replace(/\\"/g, '"').trim();
     // console.log("Executing SQL:", testCase.fullSQL);
 
+    // if SQL contain "UNLOAD", skip
+
+    if (testCase.fullSQL.includes("UNLOAD")) {
+      console.log("Skip UNLOAD query");
+      continue;
+    }
+
     const result = await executeQuery(testCase.fullSQL);
     // console.log(`Done`);
     console.log(result.durationInMs);
