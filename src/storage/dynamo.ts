@@ -21,19 +21,21 @@ export async function saveToDynamoDB(data: RedshiftComparatorQueryResult) {
     // Define current timestamp
     const timestamp = new Date().toISOString();
 
+    console.log(data);
+
     // Prepare DynamoDB PutItemCommand
     const command = new PutItemCommand({
       TableName: "dev-redshift-comparator-query-result",
       Item: {
-        campaignId: { S: data.campaignId },
-        queryExecutionId: { S: data.queryExecutionId },
-        aliasQuery: { S: data.aliasQuery },
-        status: { S: data.status },
-        result: { S: data.result },
-        durationInMs: { N: data.durationInMs.toString() },
-        cluster: { S: data.cluster },
-        outputLocation: { S: data.outputLocation },
-        note: { S: data.note },
+        campaignId: { S: data.campaignId || "" },
+        queryExecutionId: { S: data.queryExecutionId || "" },
+        aliasQuery: { S: data.aliasQuery || "" },
+        status: { S: data.status || "" },
+        result: { S: data.result || "" },
+        durationInMs: { N: data.durationInMs?.toString() || "0" },
+        cluster: { S: data.cluster || "" },
+        outputLocation: { S: data.outputLocation || "" },
+        note: { S: data.note || "" },
         createdAt: { S: timestamp },
         updatedAt: { S: timestamp },
       },
