@@ -67,9 +67,6 @@ const startNewCampaign = async (note?: string) => {
 
     // sleep 1s
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // break after 1 query
-    break;
   }
 
   // console.log(tables);
