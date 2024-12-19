@@ -153,7 +153,7 @@ export const executeQuery = async (
 
     if (status === "FINISHED") {
       const result = await getQueryResult(queryExecutionId);
-      return { status, outputLocation, result: result };
+      return { status, outputLocation, result: result, duration };
     }
 
     if (status === "FAILED") {
