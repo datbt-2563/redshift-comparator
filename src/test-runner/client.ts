@@ -6,6 +6,7 @@ import {
   Field,
   GetStatementResultCommand,
   RedshiftDataClient,
+  StatusString,
 } from "@aws-sdk/client-redshift-data";
 import { getClusterConfig } from "src/configuration/redshift-cluster";
 
@@ -66,7 +67,8 @@ export async function redshiftStatusPollerOnce(input: {
   queryExecutionId: string;
 }): Promise<{
   queryExecutionId: string;
-  status: string;
+  status: StatusString;
+  duration?: number;
   outputLocation?: string;
 }> {
   const queryExecutionId = input.queryExecutionId;
@@ -83,33 +85,22 @@ export async function redshiftStatusPollerOnce(input: {
     throw new Error("Failed to get query status");
   }
 
-  // フロント側で扱いやすいように変換する
-  let queryStatus: string;
-  switch (status) {
-    case "FINISHED":
-      queryStatus = "SUCCEEDED";
-      break;
-    case "ABORTED":
-      queryStatus = "CANCELLED";
-      break;
-    case "SUBMITTED":
-    case "PICKED":
-      queryStatus = "QUEUED";
-      break;
-    case "STARTED":
-      queryStatus = "RUNNING";
-      break;
-    default:
-      queryStatus = status;
+  let outputLocation: string | undefined;
+  // CSVクエリの場合は実行したクエリからS3Arnを取得する
+  if (query.includes("UNLOAD")) {
+    outputLocation = await extractOutputLocation(query);
   }
 
-  // CSVクエリの場合は実行したクエリからS3Arnを取得する
-  const outputLocation = await extractOutputLocation(query);
+  let duration: number | undefined;
+  if (status === "FINISHED") {
+    duration = response.Duration;
+  }
 
   return {
     queryExecutionId,
-    status: queryStatus,
+    status: status,
     outputLocation,
+    duration,
   };
 }
 
@@ -136,6 +127,7 @@ export const executeQuery = async (
   sql: string
 ): Promise<{
   status: string;
+  duration?: number;
   outputLocation?: string;
   result?: Field[][];
 }> => {
@@ -151,13 +143,15 @@ export const executeQuery = async (
       break;
     }
 
-    const { status, outputLocation } = await redshiftStatusPollerOnce({
-      queryExecutionId,
-    });
+    const { status, outputLocation, duration } = await redshiftStatusPollerOnce(
+      {
+        queryExecutionId,
+      }
+    );
 
     console.log("- status", status);
 
-    if (status === "SUCCEEDED") {
+    if (status === "FINISHED") {
       const result = await getQueryResult(queryExecutionId);
       return { status, outputLocation, result: result };
     }
