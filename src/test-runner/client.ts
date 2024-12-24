@@ -25,7 +25,7 @@ export async function setNoCacheForSession() {
     Sql: "SET enable_result_cache_for_session TO off;",
     SecretArn: process.env.COUPON_REDSHIFT_USER_SECRET_ARN,
     Database: config.database,
-    SessionKeepAliveSeconds: 180, // keep alive session for 3 minutes
+    SessionKeepAliveSeconds: 10 * 60, // keep alive session for 10 minutes
   });
 
   const request = await redshiftDataClient.send(command);
