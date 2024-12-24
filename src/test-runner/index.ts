@@ -1,13 +1,21 @@
 import { RedshiftComparatorQueryResult } from "src/storage/dynamo";
 import { runQueries, TestCase } from "./runner";
 
-export const runAllQueries = async (clusterName: string, note: string) => {
+export const generateCampaignId = () => {
+  return `campaign-` + new Date().toISOString();
+};
+
+export const runAllQueries = async (
+  clusterName: string,
+  note: string,
+  campaignId?: string
+) => {
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
 
   const results = await runQueries({
     clusterName,
-    campaignId: new Date().toISOString(),
+    campaignId: campaignId || generateCampaignId(),
     testCases,
     note,
   });
@@ -17,7 +25,8 @@ export const runAllQueries = async (clusterName: string, note: string) => {
 export const runQueriesByPatterns = async (
   clusterName: string,
   patterns: string[],
-  note: string
+  note: string,
+  campaignId?: string
 ) => {
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
@@ -28,7 +37,7 @@ export const runQueriesByPatterns = async (
 
   const results = await runQueries({
     clusterName,
-    campaignId: new Date().toISOString(),
+    campaignId: campaignId || generateCampaignId(),
     testCases: filteredTestCases,
     note,
   });
@@ -39,7 +48,8 @@ export const runQueriesByPatterns = async (
 export const runQueriesByQueryAliases = async (
   clusterName: string,
   queryAliases: string[],
-  note: string
+  note: string,
+  campaignId?: string
 ) => {
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
@@ -50,7 +60,7 @@ export const runQueriesByQueryAliases = async (
 
   const results = await runQueries({
     clusterName,
-    campaignId: `campaign-` + new Date().toISOString(),
+    campaignId: campaignId || generateCampaignId(),
     testCases: filteredTestCases,
     note,
   });

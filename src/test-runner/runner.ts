@@ -48,25 +48,19 @@ export const runQueries = async (config: {
     i++;
     _log(`Executing query ${i}/${numberOfTestCases}: ${testCase.queryAlias}`);
 
-    testCase.fullSQL = testCase.fullSQL.replace(/\\"/g, '"').trim();
+    let sql = testCase.fullSQL.replace(/\\"/g, '"').trim();
 
-    const isUnloadQuery = testCase.fullSQL
-      .toLocaleLowerCase()
-      .includes("unload");
+    const isUnloadQuery = sql.toLocaleLowerCase().includes("unload");
 
     if (isUnloadQuery) {
-      testCase.fullSQL = transformUnloadQuery(
+      sql = transformUnloadQuery(
         testCase.fullSQL,
         campaignId,
         testCase.queryAlias
       );
     }
 
-    const result = await executeQuery(
-      config.clusterName,
-      sessionId,
-      testCase.fullSQL
-    );
+    const result = await executeQuery(config.clusterName, sessionId, sql);
     _log(`Status: ${result.status} - Duration: ${result.durationInMs} ms`);
 
     const record: RedshiftComparatorQueryResult = {
@@ -75,7 +69,7 @@ export const runQueries = async (config: {
       sessionId,
       queryExecutionId: result.queryExecutionId,
       status: result.status,
-      sql: testCase.fullSQL,
+      sql: sql,
       aliasQuery: testCase.queryAlias,
       ...(result.result?.length
         ? {
@@ -116,7 +110,9 @@ export const transformUnloadQuery = (
   const newS3Path = `${process.env.REDSHIFT_CLUSTER_S3_BUCKET_NAME}/${campaignId}/${queryAlias}/`;
   const newIamRole = process.env.REDSHIFT_CLUSTER_IAM_ROLE_ARN;
 
-  return sql
+  const res = sql
     .replace(regexpS3Path, newS3Path)
     .replace(regexpIamRole, newIamRole);
+
+  return res;
 };

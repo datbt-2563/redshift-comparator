@@ -19,6 +19,10 @@ const showMenu = async () => {
       value: "run-all-queries",
     },
     {
+      title: "Run All Queries 3 times",
+      value: "run-all-queries-3-times",
+    },
+    {
       title: "Run Queries by Patterns",
       value: "run-queries-by-patterns",
     },
@@ -54,6 +58,14 @@ const showMenu = async () => {
       const clusterName = await askForClusterName();
       const note = await askForNote();
       await runAllQueries(clusterName, note);
+      break;
+    case "run-all-queries-3-times":
+      console.log("Running all queries 3 times...");
+      const clusterName0 = await askForClusterName();
+      for (let i = 0; i < 3; i++) {
+        const campaignId = `${clusterName0}_run_${i + 1}`;
+        await runAllQueries(clusterName0, `Run ${i + 1}/3 times`, campaignId);
+      }
       break;
     case "run-queries-by-patterns":
       console.log("Running queries by patterns...");
