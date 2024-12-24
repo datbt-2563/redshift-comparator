@@ -4,6 +4,12 @@ Tool to compare result and time execution of two queries in Redshift or 1 query 
 
 ## Description
 
+Menu: 
+
+- Execute test case
+- Analyze test results
+
+
 ### Modules
 
 1. **Configuration** → Prepares input data such as queries, parameters and RedShift clusters.
@@ -30,3 +36,27 @@ A test case in the Redshift Comparator system evaluates the performance and accu
 | - Execution Time       | Time taken to execute the query.                  |
 
 
+### Step
+
+1. Build test case
+...
+
+
+### How to test
+
+1. Start docker compose
+
+```
+yarn install
+
+cd temp
+docker build -t mysql-with-seed .
+docker-compose up -d
+```
+
+
+2. Execute test suites
+
+```
+yarn execute
+```

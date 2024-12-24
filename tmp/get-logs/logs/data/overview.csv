@@ -1,0 +1,11 @@
+no,alias,name,lambdaName,functionName,matchCount,total,proportion,firstMatchTimestamp,lastMatchTimestamp,firstNotMatchTimestamp,lastNotMatchTimestamp,filePath
+1,Q1,Display Log Json,prd-coupon-InvokeCouponDisplayLog-function,displayedLogSql,87,96,91%,6/26/2023,11/25/2024,2/2/2023,6/21/2023,logs/data/Q1.csv
+2,Q2,Display Log Csv,prd-coupon-InvokeCouponDisplayLogCsvUrl-function,displayedLogCsvSql,67,75,89%,6/26/2023,10/31/2024,2/2/2023,6/21/2023,logs/data/Q2.csv
+3,Q3,Usage Log Json,prd-coupon-InvokeCouponUsageLog-function,usageLogSql,972,1167,83%,6/26/2023,12/16/2024,1/5/2023,6/22/2023,logs/data/Q3.csv
+4,Q4,Usage Log Csv,prd-coupon-InvokeCouponUsageLogCsvUrl-function,usageLogCsvSql,519,635,82%,6/26/2023,12/9/2024,1/5/2023,6/22/2023,logs/data/Q4.csv
+5,Q5,Display Aggregate Json,prd-coupon-invokeCouponDisplayAggregateJson-function,byCouponMasterSql,218,255,85%,6/26/2023,12/9/2024,1/7/2023,6/23/2023,logs/data/Q5.csv
+6,Q6,Display Aggregate Csv,prd-coupon-invokeCouponDisplayAggregateCsvUrl-function,displayedCsvSql,81,119,68%,6/26/2023,12/9/2024,1/2/2023,6/21/2023,logs/data/Q6.csv
+7,Q7,Usage Aggregate Json byCouponMasterSql,prd-coupon-invokeCouponUsageAggregateJson-function,byCouponMasterSql,1325,1678,79%,6/26/2023,12/16/2024,1/4/2023,11/11/2024,logs/data/Q7.csv
+8,Q8,Usage Aggregate Json byOrganizationSql,prd-coupon-invokeCouponUsageAggregateJson-function,byOrganizationSql,86,1678,5%,7/4/2023,11/11/2024,1/4/2023,12/16/2024,logs/data/Q8.csv
+9,Q9,Usage Aggregate Csv byCouponMasterSql,prd-coupon-invokeCouponUsageAggregateCsvUrl-function,byCouponMasterCsvSql,298,468,64%,6/26/2023,12/13/2024,1/2/2023,10/31/2024,logs/data/Q9.csv
+10,Q10,Usage Aggregate Csv byOrganizationCsvSql,prd-coupon-invokeCouponUsageAggregateCsvUrl-function,byOrganizationCsvSql,25,468,5%,7/7/2023,10/31/2024,1/2/2023,12/13/2024,logs/data/Q10.csv

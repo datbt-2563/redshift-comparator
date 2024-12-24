@@ -1,0 +1,9 @@
+[
+  {
+    "campaignId": "2024-12-19T06:13:46.304Z",
+    "queryExecutionId": "67aef594-3ab8-4a8c-852d-b0391ea73cba",
+    "status": "FAILED",
+    "aliasQuery": "Q1_1",
+    "note": "test third times"
+  }
+]
