@@ -107,7 +107,7 @@ const showMenu = async () => {
 
       const clusterNames2 = getClusterNames();
       for (const clusterName of clusterNames2) {
-        await runQueriesByQueryAliases(clusterName, alias, "Test query plan");
+        await runQueriesByQueryAliases(clusterName, aliases, "Test query plan");
       }
       break;
   }
