@@ -5,9 +5,12 @@ const dynamoDBClient = new DynamoDBClient({ region: "ap-northeast-1" });
 
 export interface RedshiftComparatorQueryResult {
   campaignId: string;
+  clusterName: string;
+  sessionId: string;
   queryExecutionId: string;
   status: string;
   aliasQuery: string;
+  sql: string;
   result?: string;
   durationInMs?: number;
   cluster?: string;
@@ -26,7 +29,10 @@ export async function saveToDynamoDB(data: RedshiftComparatorQueryResult) {
       TableName: "dev-redshift-comparator-query-result",
       Item: {
         campaignId: { S: data.campaignId || "" },
+        clusterName: { S: data.clusterName || "" },
+        sessionId: { S: data.sessionId || "" },
         queryExecutionId: { S: data.queryExecutionId || "" },
+        sql: { S: data.sql || "" },
         aliasQuery: { S: data.aliasQuery || "" },
         status: { S: data.status || "" },
         result: { S: data.result || "" },

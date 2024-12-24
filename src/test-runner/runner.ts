@@ -1,3 +1,4 @@
+import cluster from "cluster";
 import { executeQuery, setNoCacheForSession } from "./client";
 import dotenv from "dotenv";
 import {
@@ -24,6 +25,7 @@ const _log = (msg) => {
 };
 
 export const runQueries = async (config: {
+  clusterName: string;
   campaignId: string;
   testCases: TestCase[];
   note?: string;
@@ -31,11 +33,12 @@ export const runQueries = async (config: {
   const { campaignId, note, testCases } = config;
 
   const numberOfTestCases = testCases.length;
+  _log(`CLUSTER_NAME: ${config.clusterName}`);
   _log(`Starting new campaign: ${campaignId}`);
   _log(`Number of queries: ${numberOfTestCases}`);
 
   _log(`Setting no-cache for session`);
-  await setNoCacheForSession();
+  const sessionId = await setNoCacheForSession(config.clusterName);
   _log("No-cache set");
 
   const tables: RedshiftComparatorQueryResult[] = [];
@@ -59,13 +62,20 @@ export const runQueries = async (config: {
       );
     }
 
-    const result = await executeQuery(testCase.fullSQL);
+    const result = await executeQuery(
+      config.clusterName,
+      sessionId,
+      testCase.fullSQL
+    );
     _log(`Status: ${result.status} - Duration: ${result.durationInMs} ms`);
 
-    const record = {
+    const record: RedshiftComparatorQueryResult = {
       campaignId,
+      clusterName: config.clusterName,
+      sessionId,
       queryExecutionId: result.queryExecutionId,
       status: result.status,
+      sql: testCase.fullSQL,
       aliasQuery: testCase.queryAlias,
       ...(result.result?.length
         ? {
@@ -81,7 +91,7 @@ export const runQueries = async (config: {
     await saveToDynamoDB(record);
     tables.push(record);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   _log("All queries executed");

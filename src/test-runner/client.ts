@@ -9,34 +9,43 @@ import {
 } from "@aws-sdk/client-redshift-data";
 import { getClusterConfig } from "src/configuration/redshift-cluster";
 
-let sessionId;
 // TODO: get information of current cluster by querying system tables
 
-const config = getClusterConfig("dev-cluster");
+/**
+ * Set no cache for session and return the session id
+ * @param clusterName
+ */
+export async function setNoCacheForSession(
+  clusterName: string
+): Promise<string> {
+  const config = getClusterConfig(clusterName);
 
-const redshiftDataClient = new RedshiftDataClient({
-  region: config.region,
-  userAgentAppId: "coupon-redshift-client",
-});
+  const redshiftDataClient = new RedshiftDataClient({
+    region: config.region,
+    userAgentAppId: "coupon-redshift-client",
+  });
 
-export async function setNoCacheForSession() {
   const command = new ExecuteStatementCommand({
     ClusterIdentifier: config.clusterIdentifier,
     Sql: "SET enable_result_cache_for_session TO off;",
-    SecretArn: process.env.COUPON_REDSHIFT_USER_SECRET_ARN,
+    SecretArn: config.adminPasswordArn,
     Database: config.database,
     SessionKeepAliveSeconds: 10 * 60, // keep alive session for 10 minutes
   });
 
   const request = await redshiftDataClient.send(command);
-  sessionId = request.SessionId;
+  const sessionId = request.SessionId;
   console.log(`SessionId: ${sessionId}`);
 
   // sleep for 3 seconds
   await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  return sessionId;
 }
 
 export async function invokeQuery(
+  clusterName: string,
+  sessionId: string,
   sql: string
 ): Promise<{ queryExecutionId: string }> {
   const command = new ExecuteStatementCommand({
@@ -49,6 +58,13 @@ export async function invokeQuery(
     // Database: config.database,
     // ClusterIdentifier: config.clusterIdentifier,
     // SecretArn: process.env.COUPON_REDSHIFT_USER_SECRET_ARN,
+  });
+
+  const config = getClusterConfig(clusterName);
+
+  const redshiftDataClient = new RedshiftDataClient({
+    region: config.region,
+    userAgentAppId: "coupon-redshift-client",
   });
 
   const request = await redshiftDataClient.send(command);
@@ -80,6 +96,8 @@ async function extractOutputLocation(
  * Redshiftクエリの実行を１回ポーリングする
  */
 export async function redshiftStatusPollerOnce(input: {
+  sessIonId: string;
+  clusterName: string;
   queryExecutionId: string;
 }): Promise<{
   queryExecutionId: string;
@@ -94,6 +112,14 @@ export async function redshiftStatusPollerOnce(input: {
   };
 
   const command = new DescribeStatementCommand(describeStatementCommandInput);
+
+  const config = getClusterConfig(input.clusterName);
+
+  const redshiftDataClient = new RedshiftDataClient({
+    region: config.region,
+    userAgentAppId: "coupon-redshift-client",
+  });
+
   const response = await redshiftDataClient.send(command);
 
   const status = response.Status;
@@ -123,6 +149,7 @@ export async function redshiftStatusPollerOnce(input: {
 }
 
 export async function getQueryResult(
+  clusterName: string,
   queryExecutionId: string
 ): Promise<Field[][]> {
   // Lấy kết quả của truy vấn
@@ -130,11 +157,20 @@ export async function getQueryResult(
     Id: queryExecutionId,
   });
 
+  const config = getClusterConfig(clusterName);
+
+  const redshiftDataClient = new RedshiftDataClient({
+    region: config.region,
+    userAgentAppId: "coupon-redshift-client",
+  });
+
   const result = await redshiftDataClient.send(resultCommand);
   return result.Records;
 }
 
 export const executeQuery = async (
+  clusterName: string,
+  sessionId: string,
   sql: string
 ): Promise<{
   status: string;
@@ -143,7 +179,7 @@ export const executeQuery = async (
   outputLocation?: string;
   result?: Field[][];
 }> => {
-  const { queryExecutionId } = await invokeQuery(sql);
+  const { queryExecutionId } = await invokeQuery(clusterName, sessionId, sql);
 
   const MAX_TIMEOUT = 1000 * 60 * 5; // 5 minutes
   const BREAK_TIME = 1000 * 3; // 3 seconds
@@ -158,6 +194,8 @@ export const executeQuery = async (
     const { status, outputLocation, duration, hasResultSet } =
       await redshiftStatusPollerOnce({
         queryExecutionId,
+        clusterName,
+        sessIonId: sessionId,
       });
 
     // console.log("- status", status);
@@ -165,7 +203,7 @@ export const executeQuery = async (
     if (status === "FINISHED") {
       let result = [];
       if (hasResultSet) {
-        result = await getQueryResult(queryExecutionId);
+        result = await getQueryResult(clusterName, queryExecutionId);
       }
 
       return {

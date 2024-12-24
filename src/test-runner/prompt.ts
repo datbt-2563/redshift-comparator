@@ -1,7 +1,23 @@
 import prompts from "prompts";
+import { clusters } from "src/configuration/redshift-cluster";
 import { TestCase } from "src/test-runner/runner";
 
 const fullTestCases = require("src/configuration/test-case.json") as TestCase[];
+
+export const askForClusterName = async (): Promise<string> => {
+  // select cluster
+  const response = await prompts({
+    type: "select",
+    name: "cluster",
+    message: "Select cluster",
+    choices: clusters.map((cluster) => ({
+      title: cluster.clusterName,
+      value: cluster.clusterName,
+    })),
+  });
+
+  return response.cluster;
+};
 
 export const askForNote = async () => {
   const response = await prompts({

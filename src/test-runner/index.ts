@@ -1,11 +1,12 @@
 import { RedshiftComparatorQueryResult } from "src/storage/dynamo";
 import { runQueries, TestCase } from "./runner";
 
-export const runAllQueries = async (note: string) => {
+export const runAllQueries = async (clusterName: string, note: string) => {
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
 
   const results = await runQueries({
+    clusterName,
     campaignId: new Date().toISOString(),
     testCases,
     note,
@@ -14,6 +15,7 @@ export const runAllQueries = async (note: string) => {
 };
 
 export const runQueriesByPatterns = async (
+  clusterName: string,
   patterns: string[],
   note: string
 ) => {
@@ -25,6 +27,7 @@ export const runQueriesByPatterns = async (
   );
 
   const results = await runQueries({
+    clusterName,
     campaignId: new Date().toISOString(),
     testCases: filteredTestCases,
     note,
@@ -34,6 +37,7 @@ export const runQueriesByPatterns = async (
 };
 
 export const runQueriesByQueryAliases = async (
+  clusterName: string,
   queryAliases: string[],
   note: string
 ) => {
@@ -45,7 +49,8 @@ export const runQueriesByQueryAliases = async (
   );
 
   const results = await runQueries({
-    campaignId: new Date().toISOString(),
+    clusterName,
+    campaignId: `campaign-` + new Date().toISOString(),
     testCases: filteredTestCases,
     note,
   });
