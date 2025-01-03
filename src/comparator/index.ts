@@ -177,6 +177,10 @@ export const compareQueriesByQueryAliases = async (
 const showMenu = async () => {
   const choices = [
     {
+      title: "Full compare All Queries (1 planning + 3 test)",
+      value: "full-compare-all-queries",
+    },
+    {
       title: "Compare All Queries",
       value: "compare-all-queries",
     },
@@ -203,6 +207,19 @@ const showMenu = async () => {
   const { value } = response;
 
   switch (value) {
+    case "full-compare-all-queries":
+      console.log("Full compare All Queries (1 planning + 3 test)...");
+      const _note = await askForNote();
+      const extraNotes = ["test planning", "1st", "2nd", "3rd"];
+      for (let i = 0; i < 4; i++) {
+        const _fullNote = `${_note} - ${extraNotes[i]}`;
+        console.log(`Note: ${_fullNote}`);
+        await compareAllQueries(_fullNote);
+        // sleep 5 seconds
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+      break;
+
     case "compare-all-queries":
       console.log("Comparing all queries...");
       const note = await askForNote();
