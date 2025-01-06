@@ -1,4 +1,5 @@
 import prompts from "prompts";
+import { getAdjustSqlQueries } from "src/sql";
 import { RedshiftComparatorQueryResult } from "src/storage/dynamo";
 import { generateCampaignId, runAllQueries } from "src/test-runner";
 import {
@@ -177,6 +178,10 @@ export const compareQueriesByQueryAliases = async (
 const showMenu = async () => {
   const choices = [
     {
+      title: "Compare the result of queries",
+      value: "compare-the-result-of-queries",
+    },
+    {
       title: "Full compare All Queries (1 planning + 3 test)",
       value: "full-compare-all-queries",
     },
@@ -207,6 +212,10 @@ const showMenu = async () => {
   const { value } = response;
 
   switch (value) {
+    case "compare-the-result-of-queries":
+      await compareTheResultOfQueries();
+      break;
+
     case "full-compare-all-queries":
       console.log("Full compare All Queries (1 planning + 3 test)...");
       const _note = await askForNote();
@@ -247,6 +256,145 @@ const showMenu = async () => {
       console.log("Exiting...");
       break;
   }
+};
+
+const compareTheResultOfQueries = async () => {
+  const queries = getAdjustSqlQueries();
+
+  let testCases: TestCase[] =
+    require("../configuration/test-case.json") as TestCase[];
+  // Remove all Q1 to Q4
+  const queryPatterns = ["Q1", "Q2", "Q3", "Q4"];
+  testCases = testCases.filter(
+    (testCase) => !queryPatterns.includes(testCase.queryPattern)
+  );
+
+  let matched = 0;
+  let unmatched = 0;
+
+  for (const tc of testCases) {
+    const sqlQuery = queries[tc.queryAlias];
+
+    if (sqlQuery) {
+      const isUnloadQuery = sqlQuery.toLocaleLowerCase().includes("unload");
+      // if (isUnloadQuery) continue;
+
+      console.log(`Comparing ${tc.queryAlias}`);
+      console.log(`testCase.fullSQL`, tc.fullSQL);
+
+      const tc2 = Object.assign({}, tc);
+      tc2.fullSQL = sqlQuery;
+      tc2.queryAlias = tc.queryAlias + "_2";
+
+      console.log(`testcase2.fullSQL`, tc2.fullSQL);
+
+      console.log(`confirm sql is different`);
+      const isSame = tc.fullSQL === tc2.fullSQL;
+
+      if (isSame) {
+        console.log(`❌ SQL is the same`);
+
+        continue;
+      }
+
+      const results = await runQueries({
+        clusterName: "dc2.large_x5nodes",
+        campaignId: "full-compare-sql",
+        testCases: [tc, tc2],
+      });
+
+      const result1 = results[0];
+      const result2 = results[1];
+
+      if (isUnloadQuery) {
+        const file1 = result1.outputLocation;
+        const file2 = result2.outputLocation;
+
+        console.log(`file1`, file1);
+        console.log(`file2`, file2);
+
+        const isSame = await compare2FilesInS3(file1, file2);
+        if (isSame) {
+          console.log(`✅ Result match`);
+          matched++;
+        } else {
+          console.log(`❌ Result mismatch`);
+          unmatched++;
+        }
+      } else {
+        if (result1.result?.toString() === result2.result?.toString()) {
+          console.log(`✅ Result match`);
+          matched++;
+        } else {
+          console.log(`result1.result`, result1.result);
+          console.log(`result2.result`, result2.result);
+
+          console.log(`❌ Result mismatch`);
+
+          unmatched++;
+        }
+      }
+    }
+  }
+
+  console.log(`Matched: ${matched}`);
+  console.log(`Unmatched: ${unmatched}`);
+};
+
+const compare2FilesInS3 = async (
+  filePath1: string,
+  filePath2: string
+): Promise<boolean> => {
+  // s3://dev-redshift-comparator/campaign-2024-12-26T12:32:33.776Z/Q6_2/
+  const AWS = require("aws-sdk");
+  const s3 = new AWS.S3();
+
+  const params1 = {
+    Bucket: "dev-redshift-comparator",
+    Key: filePath1.replace("s3://dev-redshift-comparator/", "") + "000",
+  };
+
+  const params2 = {
+    Bucket: "dev-redshift-comparator",
+    Key: filePath2.replace("s3://dev-redshift-comparator/", "") + "000",
+  };
+
+  const data1 = await s3.getObject(params1).promise();
+
+  const data2 = await s3.getObject(params2).promise();
+
+  const content1 = data1.Body.toString();
+  const content2 = data2.Body.toString();
+
+  console.log(`content1`, content1);
+  console.log(`content2`, content2);
+
+  const isSame = content1 === content2;
+  return isSame;
+  // if (isSame) {
+  //   console.log(`✅ Result match`);
+  //   return true;
+  // } else {
+  //   // Check order of rows
+  //   const rows1 = content1.split("\n");
+  //   const rows2 = content2.split("\n");
+
+  //   if (rows1.length !== rows2.length) {
+  //     console.log(`❌ Row count mismatch`);
+  //     return false;
+  //   }
+
+  //   for (let i = 0; i < rows1.length; i++) {
+  //     // "54","株式会社トライ","TEST-seikatubunka-2022-4-27","【デモ】都内限定！銭湯クーポン","11","6"
+
+  //     const rowData = rows1[i].split(",");
+
+  //     if (rows1[i] !== rows2[i]) {
+  //       console.log(`❌ Row mismatch at line ${i + 1}`);
+  //       return false;
+  //     }
+  //   }
+  // }
 };
 
 const main = async () => {

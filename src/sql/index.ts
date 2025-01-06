@@ -2,7 +2,7 @@ import { runQueries, TestCase } from "src/test-runner/runner";
 
 const fs = require("fs");
 
-const getAdjustSqlQueries = (): Record<string, string> => {
+export const getAdjustSqlQueries = (): Record<string, string> => {
   const path = `src/configuration/sql.csv`;
   const content = fs.readFileSync(path, "utf-8");
   const rows = content.split("\n");
@@ -49,11 +49,11 @@ const main = async () => {
 
   const tables = await runQueries({
     clusterName: "dc2.large_x5nodes",
-    campaignId: "compare-sql-2",
+    campaignId: "compare-sql " + new Date().toISOString(),
     testCases,
   });
 
   console.table(tables, ["aliasQuery", "status", "duration"]);
 };
 
-main();
+// main();

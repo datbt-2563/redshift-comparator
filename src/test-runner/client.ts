@@ -85,9 +85,11 @@ export async function invokeQuery(
 async function extractOutputLocation(
   query: string
 ): Promise<string | undefined> {
-  const regex = /to\s+'(s3:\/\/[^']+)'/;
+  console.log(`Extracting output location from query: ${query}`);
+  const regex = /to\s+'(s3:\/\/[^']+)'/i;
   const match = query.match(regex);
   if (match) {
+    console.log(`Output location: ${match[1]}`);
     return match[1];
   }
 }
