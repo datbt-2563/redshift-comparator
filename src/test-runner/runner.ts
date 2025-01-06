@@ -48,12 +48,7 @@ export const runQueries = async (config: {
     i++;
     _log(`Executing query ${i}/${numberOfTestCases}: ${testCase.queryAlias}`);
 
-    let sql = testCase.fullSQL
-      .replace(/\\\\""/g, '"')
-      .replace(/\\"/g, '"')
-      // replace "" with "
-      .replace(/""/g, '"')
-      .trim();
+    let sql = testCase.fullSQL.replace(/\\"/g, '"').trim();
 
     // remove last character " if exists
     if (sql[sql.length - 1] === '"') {
@@ -72,7 +67,11 @@ export const runQueries = async (config: {
     console.log(`sql`, sql);
 
     const result = await executeQuery(config.clusterName, sessionId, sql);
-    _log(`Status: ${result.status} - Duration: ${result.durationInMs} ms`);
+    _log(
+      `Status: ${result.status} - Duration: ${result.durationInMs} ms - ${
+        result.status === "FAILED" ? "❌" : "✅"
+      }`
+    );
 
     const record: RedshiftComparatorQueryResult = {
       campaignId,

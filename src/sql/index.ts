@@ -53,7 +53,7 @@ const main = async () => {
     testCases,
   });
 
-  console.log(tables);
+  console.table(tables, ["aliasQuery", "status", "duration"]);
 };
 
 main();
