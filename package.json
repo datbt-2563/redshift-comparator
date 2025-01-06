@@ -6,11 +6,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx tsx index.ts",
     "compare": "npx tsx ./src/comparator/index.ts",
+    "sql": "npx tsx ./src/sql/index.ts",
     "get-log": "npx tsx get-log.ts",
     "ana": "npx tsx analyze-log.ts",
     "query": "npx tsx analyze-query.ts",
     "group": "npx tsx group-by.ts",
     "report": "npx tsx src/report/index.ts",
+    "scan": "npx tsx src/report/scan.ts",
     "execute": "npx tsx ./src/test-runner/index.ts"
   },
   "author": "",

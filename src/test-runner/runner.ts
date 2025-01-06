@@ -48,7 +48,17 @@ export const runQueries = async (config: {
     i++;
     _log(`Executing query ${i}/${numberOfTestCases}: ${testCase.queryAlias}`);
 
-    let sql = testCase.fullSQL.replace(/\\"/g, '"').trim();
+    let sql = testCase.fullSQL
+      .replace(/\\\\""/g, '"')
+      .replace(/\\"/g, '"')
+      // replace "" with "
+      .replace(/""/g, '"')
+      .trim();
+
+    // remove last character " if exists
+    if (sql[sql.length - 1] === '"') {
+      sql = sql.slice(0, -1);
+    }
 
     const isUnloadQuery = sql.toLocaleLowerCase().includes("unload");
 
@@ -59,6 +69,7 @@ export const runQueries = async (config: {
         testCase.queryAlias
       );
     }
+    console.log(`sql`, sql);
 
     const result = await executeQuery(config.clusterName, sessionId, sql);
     _log(`Status: ${result.status} - Duration: ${result.durationInMs} ms`);

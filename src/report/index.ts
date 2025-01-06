@@ -1,5 +1,6 @@
 import fs from "fs";
 import { getClusterNames } from "src/configuration/redshift-cluster";
+import { getRecordsByCampaignId } from "src/storage/dynamo";
 import { TestCase } from "src/test-runner/runner";
 
 interface CampaignData {
@@ -12,15 +13,20 @@ interface CampaignData {
 }
 
 const getCampaignIds = async () => {
-  const clusterNames = await getClusterNames();
-  const campaignIds = [];
-  clusterNames.forEach((clusterName) => {
-    for (let i = 0; i < 3; i++) {
-      const campaignId = `${clusterName}_run_${i + 1}`;
-      campaignIds.push(campaignId);
-    }
-  });
-  return campaignIds;
+  return [
+    "dc2.large_x5nodes_run_1",
+    "dc2.large_x5nodes_run_2",
+    "dc2.large_x5nodes_run_3",
+    "campaign-2024-12-26T11:45:23.226Z",
+    "campaign-2024-12-26T12:32:33.776Z",
+    "campaign-2024-12-30T07:32:54.784Z",
+    "campaign-2024-12-30T09:35:22.782Z",
+    "campaign-2024-12-30T11:07:52.516Z",
+    "campaign-2024-12-30T11:59:31.657Z",
+    "campaign-2025-01-01T11:31:50.802Z",
+    "campaign-2025-01-01T12:45:31.968Z",
+    "campaign-2025-01-01T14:00:02.690Z",
+  ];
 };
 
 const getCampaignDataFromCsv = async (
@@ -55,7 +61,32 @@ const getCampaignDataFromCsv = async (
 
 const main = async () => {
   const campaignIds = await getCampaignIds();
-  console.log(campaignIds);
+
+  // console.log(campaignIds);
+
+  // for (const campaignId of campaignIds) {
+  //   const records = await getRecordsByCampaignId(campaignId);
+  //   const filePath = `./target_campaign/${campaignId}.csv`;
+  //   const csv = [
+  //     "campaignId,aliasQuery,clusterName,status,durationInMs,createdAt",
+  //     ...records.map((record) => {
+  //       return [
+  //         record.campaignId,
+  //         record.aliasQuery,
+  //         record.clusterName,
+  //         record.status,
+  //         record.durationInMs,
+  //         record.createdAt,
+  //       ].join(",");
+  //     }),
+  //   ].join("\n");
+  //   fs.writeFileSync(filePath, csv);
+  //   console.log(`Write to ${filePath}`);
+  // }
+
+  // return;
+
+  // getRecordsByCampaignId
 
   const report: Record<string, Record<string, CampaignData>> = {};
   for (const campaignId of campaignIds) {
@@ -99,7 +130,7 @@ const main = async () => {
   });
 
   const csv = [headers.join(","), ...rows].join("\n");
-  fs.writeFileSync("./report.csv", csv);
+  fs.writeFileSync("./report2.csv", csv);
 };
 
 main();
