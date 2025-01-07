@@ -341,7 +341,7 @@ const compareTheResultOfQueries = async () => {
   console.log(`Unmatched: ${unmatched}`);
 };
 
-const compare2FilesInS3 = async (
+export const compare2FilesInS3 = async (
   filePath1: string,
   filePath2: string
 ): Promise<boolean> => {
@@ -366,8 +366,8 @@ const compare2FilesInS3 = async (
   const content1 = data1.Body.toString();
   const content2 = data2.Body.toString();
 
-  console.log(`content1`, content1);
-  console.log(`content2`, content2);
+  console.log(`content1\n`, content1);
+  console.log(`content2\n`, content2);
 
   const isSame = content1 === content2;
   return isSame;
@@ -401,4 +401,4 @@ const main = async () => {
   await showMenu();
 };
 
-main();
+// main();
