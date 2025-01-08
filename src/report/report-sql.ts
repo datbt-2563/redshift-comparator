@@ -11,7 +11,7 @@ const getPairGroupName = (aliasQuery: string) => {
 };
 
 const main = async () => {
-  const records = await getRecordsByCampaignId("full-compare-sql");
+  const records = await getRecordsByCampaignId("full-compare-sql-2nd");
   // console.log(records);
 
   // group by query alias
@@ -44,11 +44,14 @@ const main = async () => {
     "Q9_2",
     "Q9_4",
     "Q9_8",
-    "Q10_4",
-    "Q10_5",
-    "Q10_6",
-    "Q10_7",
+    // "Q10_4",
+    // "Q10_5",
+    // "Q10_6",
+    // "Q10_7",
   ];
+
+  let match = 0;
+  let notMatch = 0;
 
   for (const pairGroup of Object.values(pairGroups)) {
     const first = pairGroup[0];

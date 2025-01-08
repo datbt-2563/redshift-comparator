@@ -269,11 +269,49 @@ const compareTheResultOfQueries = async () => {
     (testCase) => !queryPatterns.includes(testCase.queryPattern)
   );
 
+  const targetGroupNames = [
+    "Q5_1",
+    "Q5_2",
+    "Q5_8",
+    "Q6_7",
+    "Q6_8",
+    "Q7_3",
+    "Q7_9",
+    "Q7_10",
+    "Q8_1",
+    "Q8_2",
+    "Q8_3",
+    "Q8_5",
+    "Q8_9",
+    "Q9_2",
+    "Q9_4",
+    "Q9_8",
+    "Q10_4",
+    "Q10_5",
+    "Q10_6",
+    "Q10_7",
+  ];
+
   let matched = 0;
   let unmatched = 0;
 
+  const getPairGroupName = (aliasQuery: string) => {
+    const countUnderScore = aliasQuery.split("_").length - 1;
+    if (countUnderScore > 1) {
+      return aliasQuery.slice(0, -2);
+    }
+    return aliasQuery;
+  };
+
   for (const tc of testCases) {
     const sqlQuery = queries[tc.queryAlias];
+
+    const pairGroupName = getPairGroupName(tc.queryAlias);
+    if (!targetGroupNames.includes(pairGroupName)) {
+      continue;
+    }
+
+    console.log(`pairGroupName: ${pairGroupName}`);
 
     if (sqlQuery) {
       const isUnloadQuery = sqlQuery.toLocaleLowerCase().includes("unload");
@@ -299,7 +337,7 @@ const compareTheResultOfQueries = async () => {
 
       const results = await runQueries({
         clusterName: "dc2.large_x5nodes",
-        campaignId: "full-compare-sql",
+        campaignId: "full-compare-sql-2nd",
         testCases: [tc, tc2],
       });
 
