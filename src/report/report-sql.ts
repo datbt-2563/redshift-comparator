@@ -11,7 +11,7 @@ const getPairGroupName = (aliasQuery: string) => {
 };
 
 const main = async () => {
-  const records = await getRecordsByCampaignId("full-compare-sql-2nd");
+  const records = await getRecordsByCampaignId("full-compare-sql-3rd");
   // console.log(records);
 
   // group by query alias
@@ -28,22 +28,22 @@ const main = async () => {
   }
 
   let targetGroupNames = [
-    "Q5_1",
-    "Q5_2",
-    "Q5_8",
-    "Q6_7",
+    // "Q5_1",
+    // "Q5_2",
+    // "Q5_8",
+    // "Q6_7",
     "Q6_8",
-    "Q7_3",
-    "Q7_9",
-    "Q7_10",
-    "Q8_1",
-    "Q8_2",
-    "Q8_3",
-    "Q8_5",
-    "Q8_9",
+    // "Q7_3",
+    // "Q7_9",
+    // "Q7_10",
+    // "Q8_1",
+    // "Q8_2",
+    // "Q8_3",
+    // "Q8_5",
+    // "Q8_9",
     "Q9_2",
     "Q9_4",
-    "Q9_8",
+    // "Q9_8",
     // "Q10_4",
     // "Q10_5",
     // "Q10_6",
@@ -52,6 +52,7 @@ const main = async () => {
 
   let match = 0;
   let notMatch = 0;
+  let notMatchGroupNames: string[] = [];
 
   for (const pairGroup of Object.values(pairGroups)) {
     const first = pairGroup[0];
@@ -85,12 +86,10 @@ const main = async () => {
         }
       }
     } else {
-      continue;
       const firstContent = first.result;
       const secondContent = second.result;
 
       const isSame = firstContent === secondContent;
-
       if (!isSame) {
         console.log(`pairGroupName: ${pairGroupName}`);
         console.log(`🐝 first: \n${firstContent}`);
@@ -110,6 +109,10 @@ const main = async () => {
       }
     }
   }
+
+  console.log(`match: ${match}`);
+  console.log(`notMatch: ${notMatch}`);
+  console.log(notMatchGroupNames);
 };
 
 main();

@@ -61,7 +61,7 @@ const getCampaignDataFromCsv = async (
 
 const main = async () => {
   // const campaignIds = await getCampaignIds();
-  const campaignIds = ["full-compare-sql"];
+  const campaignIds = ["full-compare-sql-3rd"];
 
   // console.log(campaignIds);
 

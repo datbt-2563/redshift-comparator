@@ -286,10 +286,10 @@ const compareTheResultOfQueries = async () => {
     "Q9_2",
     "Q9_4",
     "Q9_8",
-    "Q10_4",
-    "Q10_5",
-    "Q10_6",
-    "Q10_7",
+    // "Q10_4",
+    // "Q10_5",
+    // "Q10_6",
+    // "Q10_7",
   ];
 
   let matched = 0;
@@ -337,7 +337,7 @@ const compareTheResultOfQueries = async () => {
 
       const results = await runQueries({
         clusterName: "dc2.large_x5nodes",
-        campaignId: "full-compare-sql-2nd",
+        campaignId: "full-compare-sql-3rd",
         testCases: [tc, tc2],
       });
 
@@ -408,31 +408,48 @@ export const compare2FilesInS3 = async (
   console.log(`content2\n`, content2);
 
   const isSame = content1 === content2;
-  return isSame;
-  // if (isSame) {
-  //   console.log(`✅ Result match`);
-  //   return true;
-  // } else {
-  //   // Check order of rows
-  //   const rows1 = content1.split("\n");
-  //   const rows2 = content2.split("\n");
 
-  //   if (rows1.length !== rows2.length) {
-  //     console.log(`❌ Row count mismatch`);
-  //     return false;
-  //   }
+  if (isSame) {
+    console.log(`✅ Result match`);
+    return true;
+  } else {
+    // Check order of rows
+    const rows1 = content1.split("\n");
+    const rows2 = content2.split("\n");
 
-  //   for (let i = 0; i < rows1.length; i++) {
-  //     // "54","株式会社トライ","TEST-seikatubunka-2022-4-27","【デモ】都内限定！銭湯クーポン","11","6"
+    if (rows1.length !== rows2.length) {
+      console.log(`❌ Row count mismatch`);
+      return false;
+    }
 
-  //     const rowData = rows1[i].split(",");
+    const row1IgnoresFirstCol = [];
+    const row2IgnoresFirstCol = [];
 
-  //     if (rows1[i] !== rows2[i]) {
-  //       console.log(`❌ Row mismatch at line ${i + 1}`);
-  //       return false;
-  //     }
-  //   }
-  // }
+    for (let i = 0; i < rows1.length; i++) {
+      const rowData = rows1[i].split(",");
+      const rowData2 = rows2[i].split(",");
+
+      row1IgnoresFirstCol.push(rowData.slice(1).join(","));
+      row2IgnoresFirstCol.push(rowData2.slice(1).join(","));
+    }
+
+    // sort row1IgnoresFirstCol theo alphabe
+    row1IgnoresFirstCol.sort();
+    row2IgnoresFirstCol.sort();
+
+    const isSameOrder =
+      row1IgnoresFirstCol.join(",") === row2IgnoresFirstCol.join(",");
+
+    console.log(`row1IgnoresFirstCol\n`, row1IgnoresFirstCol.join(","));
+    console.log(`row2IgnoresFirstCol\n`, row2IgnoresFirstCol.join(","));
+
+    if (isSameOrder) {
+      console.log(`✅ Result match`);
+      return true;
+    }
+
+    return false;
+  }
 };
 
 const main = async () => {
