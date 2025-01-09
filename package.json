@@ -7,6 +7,7 @@
     "start": "npx tsx index.ts",
     "compare": "npx tsx ./src/comparator/index.ts",
     "sql": "npx tsx src/report/report-sql.ts",
+    "sql-db": "npx tsx src/report/report-sql-db.ts",
     "get-log": "npx tsx get-log.ts",
     "ana": "npx tsx analyze-log.ts",
     "query": "npx tsx analyze-query.ts",
