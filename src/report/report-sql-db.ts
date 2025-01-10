@@ -9,6 +9,15 @@ const main = async () => {
     // "campaign-2025-01-10T02:02:19.274Z"
     "full-compare-sql-5th"
   );
+
+  // combine_dc2.large_x5nodes_run_1
+  // combine_dc2.large_x5nodes_run_2
+  // combine_dc2.large_x5nodes_run_3
+
+  // combine_dc2.large_x4nodes_run_1
+  // combine_dc2.large_x4nodes_run_2
+  // combine_dc2.large_x4nodes_run_3
+
   // const records = await getRecordsByCampaignId("full-compare-sql-4th");
   // const records = await getRecordsByCampaignId("full-compare-sql");
 

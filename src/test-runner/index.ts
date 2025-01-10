@@ -17,6 +17,7 @@ export const runAllQueries = async (
   const queries = getAdjustSqlQueries();
 
   // change query to new adjusted query
+  console.log(`change query to new adjusted query`);
   testCases.forEach((testCase) => {
     const sqlQuery = queries[testCase.queryAlias];
     if (sqlQuery) {
