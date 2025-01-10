@@ -1,5 +1,6 @@
 import { RedshiftComparatorQueryResult } from "src/storage/dynamo";
 import { runQueries, TestCase } from "./runner";
+import { getAdjustSqlQueries } from "src/sql";
 
 export const generateCampaignId = () => {
   return `campaign-` + new Date().toISOString();
@@ -12,6 +13,16 @@ export const runAllQueries = async (
 ) => {
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
+
+  const queries = getAdjustSqlQueries();
+
+  // change query to new adjusted query
+  testCases.forEach((testCase) => {
+    const sqlQuery = queries[testCase.queryAlias];
+    if (sqlQuery) {
+      testCase.fullSQL = sqlQuery;
+    }
+  });
 
   const results = await runQueries({
     clusterName,

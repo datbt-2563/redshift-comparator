@@ -6,7 +6,8 @@ import { TestCase } from "src/test-runner/runner";
 const main = async () => {
   const recordsBase = await getRecordsByCampaignId("dc2.large_x5nodes_run_3");
   const records = await getRecordsByCampaignId(
-    "campaign-2025-01-09T09:30:07.919Z"
+    // "campaign-2025-01-10T02:02:19.274Z"
+    "full-compare-sql-5th"
   );
   // const records = await getRecordsByCampaignId("full-compare-sql-4th");
   // const records = await getRecordsByCampaignId("full-compare-sql");

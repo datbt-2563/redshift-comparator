@@ -337,7 +337,7 @@ const compareTheResultOfQueries = async () => {
 
       const results = await runQueries({
         clusterName: "dc2.large_x5nodes",
-        campaignId: "full-compare-sql-4th",
+        campaignId: "full-compare-sql-5th",
         testCases: [tc, tc2],
       });
 
