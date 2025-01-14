@@ -14,16 +14,16 @@ export const runAllQueries = async (
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
 
-  const queries = getAdjustSqlQueries();
+  // const queries = getAdjustSqlQueries();
 
   // change query to new adjusted query
-  console.log(`change query to new adjusted query`);
-  testCases.forEach((testCase) => {
-    const sqlQuery = queries[testCase.queryAlias];
-    if (sqlQuery) {
-      testCase.fullSQL = sqlQuery;
-    }
-  });
+  // console.log(`change query to new adjusted query`);
+  // testCases.forEach((testCase) => {
+  //   const sqlQuery = queries[testCase.queryAlias];
+  //   if (sqlQuery) {
+  //     testCase.fullSQL = sqlQuery;
+  //   }
+  // });
 
   const results = await runQueries({
     clusterName,
