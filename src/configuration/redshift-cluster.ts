@@ -24,14 +24,14 @@ export const clusters: ClusterConfig[] = [
   //   adminPasswordArn:
   //     "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-2-admin-DgRvv4",
   // },
-  {
-    clusterName: "dc2.large_x4nodes",
-    region: "ap-northeast-1",
-    clusterIdentifier: "dev-coupon-redshift-cluster-3",
-    database: "prd_coupon_logs_db",
-    adminPasswordArn:
-      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-3-admin-PYni6a",
-  },
+  // {
+  //   clusterName: "dc2.large_x4nodes",
+  //   region: "ap-northeast-1",
+  //   clusterIdentifier: "dev-coupon-redshift-cluster-3",
+  //   database: "prd_coupon_logs_db",
+  //   adminPasswordArn:
+  //     "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-3-admin-PYni6a",
+  // },
   // {
   //   clusterName: "dc2.large_x5nodes",
   //   region: "ap-northeast-1",
@@ -64,6 +64,46 @@ export const clusters: ClusterConfig[] = [
   //   adminPasswordArn:
   //     "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-7-admin-QwwrFJ",
   // },
+  {
+    clusterName: "dc2.large_x8nodes",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster-8",
+    database: "prd_coupon_logs_db",
+    adminPasswordArn:
+      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-8-admin-hlXAVZ",
+  },
+  {
+    clusterName: "dc2.large_x12nodes",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster-9",
+    database: "prd_coupon_logs_db",
+    adminPasswordArn:
+      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-9-admin-xgynND",
+  },
+  {
+    clusterName: "dc2.large_x14nodes",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster-10",
+    database: "prd_coupon_logs_db",
+    adminPasswordArn:
+      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-10-admin-vyXXvj",
+  },
+  {
+    clusterName: "dc2.large_x16nodes",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster-11",
+    database: "prd_coupon_logs_db",
+    adminPasswordArn:
+      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-11-admin-K97r2a",
+  },
+  {
+    clusterName: "ra3.xlplus_x4nodes",
+    region: "ap-northeast-1",
+    clusterIdentifier: "dev-coupon-redshift-cluster-12",
+    database: "prd_coupon_logs_db",
+    adminPasswordArn:
+      "arn:aws:secretsmanager:ap-northeast-1:856562439801:secret:redshift!dev-coupon-redshift-cluster-12-admin-xfX5MQ",
+  },
 ];
 
 export const getClusterConfig = (clusterName: string): ClusterConfig => {
