@@ -7,6 +7,7 @@ async function putDataToDynamoDB(): Promise<{
 }> {
   const dynamoDBClient = new DynamoDBClient({
     region: "ap-northeast-1",
+    maxAttempts: 1, // This is not a good option
   });
 
   // Prepare DynamoDB PutItemCommand
@@ -42,6 +43,8 @@ async function doProcesses() {
 
   let numberFailed = 0;
   let maxTime = 0;
+  let maxTimeSuccess = 0;
+  let maxTimeFailed = 0;
   const promises = Array.from({ length: N }, async (_, i) => {
     const result = await putDataToDynamoDB();
     if (!result.isSuccess) {
@@ -50,6 +53,16 @@ async function doProcesses() {
 
     if (result.timeInMs > maxTime) {
       maxTime = result.timeInMs;
+    }
+
+    if (result.isSuccess) {
+      if (result.timeInMs > maxTimeSuccess) {
+        maxTimeSuccess = result.timeInMs;
+      }
+    } else {
+      if (result.timeInMs > maxTimeFailed) {
+        maxTimeFailed = result.timeInMs;
+      }
     }
   });
 
@@ -61,6 +74,8 @@ async function doProcesses() {
   return {
     numberFailed,
     maxTime,
+    maxTimeSuccess,
+    maxTimeFailed,
   };
 }
 
@@ -69,12 +84,15 @@ async function attack() {
   while (true) {
     time++;
     console.log(`⏰ Time: ${time}`);
-    const { numberFailed, maxTime } = await doProcesses();
+    const { numberFailed, maxTime, maxTimeSuccess, maxTimeFailed } =
+      await doProcesses();
 
     if (numberFailed > 0) {
       console.log("🔥 Attack detected!");
       console.log(`Number of failed: ${numberFailed}`);
       console.log(`Max time: ${maxTime} ms`);
+      console.log(`Max time success: ${maxTimeSuccess} ms`);
+      console.log(`Max time failed: ${maxTimeFailed} ms`);
       break;
     }
 
@@ -82,6 +100,8 @@ async function attack() {
       console.log("🔥 Attack detected!");
       console.log(`Number of failed: ${numberFailed}`);
       console.log(`Max time: ${maxTime} ms`);
+      console.log(`Max time success: ${maxTimeSuccess} ms`);
+      console.log(`Max time failed: ${maxTimeFailed} ms`);
       break;
     }
 
