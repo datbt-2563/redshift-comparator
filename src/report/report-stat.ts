@@ -6,7 +6,27 @@ const campaignIds = [
   // "dc2.large_x3nodes_run_2",
   // "combine_dc2.large_x4nodes_run_2",
   // "combine_dc2.large_x5nodes_run_2",
-  "campaign-2025-01-14T08:09:29.070Z",
+  // "campaign-2025-01-14T08:09:29.070Z",
+
+  "official_dc2.large_x8nodes_run_1",
+  "official_dc2.large_x8nodes_run_2",
+  "official_dc2.large_x8nodes_run_3",
+
+  "official_dc2.large_x12nodes_run_1",
+  "official_dc2.large_x12nodes_run_2",
+  "official_dc2.large_x12nodes_run_3",
+
+  "official_dc2.large_x14nodes_run_1",
+  "official_dc2.large_x14nodes_run_2",
+  "official_dc2.large_x14nodes_run_3",
+
+  "official_dc2.large_x16nodes_run_1",
+  "official_dc2.large_x16nodes_run_2",
+  "official_dc2.large_x16nodes_run_3",
+
+  "official_ra3.xlplus_x4nodes_run_1",
+  "official_ra3.xlplus_x4nodes_run_2",
+  "official_ra3.xlplus_x4nodes_run_3",
 ];
 
 const analyzeStat = async (campaignId: string) => {
