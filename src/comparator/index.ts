@@ -10,12 +10,14 @@ import {
 } from "src/test-runner/prompt";
 import { runQueries, TestCase } from "src/test-runner/runner";
 
+const CLUSTER_NAME = "dc2.large_x5nodes";
+
 export const runAliasQueryAndCompare = async (
   aliases: string[],
   note: string,
   campaignId?: string
 ) => {
-  const clusterName = "dc2.large_x5nodes";
+  const clusterName = CLUSTER_NAME;
 
   const testCases: TestCase[] =
     require("../configuration/test-case.json") as TestCase[];
@@ -336,7 +338,7 @@ const compareTheResultOfQueries = async () => {
       }
 
       const results = await runQueries({
-        clusterName: "dc2.large_x5nodes",
+        clusterName: CLUSTER_NAME,
         campaignId: "full-compare-sql-5th",
         testCases: [tc, tc2],
       });
