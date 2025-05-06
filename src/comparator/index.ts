@@ -10,7 +10,7 @@ import {
 } from "src/test-runner/prompt";
 import { runQueries, TestCase } from "src/test-runner/runner";
 
-const CLUSTER_NAME = "dc2.large_x5nodes";
+const CLUSTER_NAME = "ra3.large_x3nodes";
 
 export const runAliasQueryAndCompare = async (
   aliases: string[],
@@ -26,7 +26,7 @@ export const runAliasQueryAndCompare = async (
     aliases.includes(testCase.queryAlias)
   );
 
-  const baseCampaignId = `dc2.large_x5nodes_run_3`;
+  const baseCampaignId = CLUSTER_NAME + `_run_3`;
 
   const results = await runQueries({
     clusterName,
@@ -458,4 +458,4 @@ const main = async () => {
   await showMenu();
 };
 
-// main();
+main();
