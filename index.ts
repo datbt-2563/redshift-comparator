@@ -62,8 +62,8 @@ const showMenu = async () => {
     case "run-all-queries-3-times":
       console.log("Running all queries 3 times...");
       const clusterName0 = await askForClusterName();
-      for (let i = 0; i < 2; i++) {
-        const campaignId = `new_query_official_${clusterName0}_run_${i + 1}`;
+      for (let i = 0; i < 1; i++) {
+        const campaignId = `new_query_2_official_${clusterName0}_run_${i + 1}`;
         await runAllQueries(clusterName0, `Run ${i + 1}/3 times`, campaignId);
       }
       break;
