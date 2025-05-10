@@ -43,14 +43,16 @@ const showMenu = async () => {
       value: "exit",
     },
   ];
-  const response = await prompts({
-    type: "select",
-    name: "value",
-    message: "Choose an action",
-    choices,
-  });
+  // const response = await prompts({
+  //   type: "select",
+  //   name: "value",
+  //   message: "Choose an action",
+  //   choices,
+  // });
 
-  const { value } = response;
+  // const { value } = response;
+
+  let value = "run-all-queries-3-times";
 
   switch (value) {
     case "run-all-queries":
@@ -61,7 +63,8 @@ const showMenu = async () => {
       break;
     case "run-all-queries-3-times":
       console.log("Running all queries 3 times...");
-      const clusterName0 = await askForClusterName();
+      // const clusterName0 = await askForClusterName();
+      const clusterName0 = "ra3.large_x3nodes";
       for (let i = 0; i < 1; i++) {
         const campaignId = `new_query_3_official_${clusterName0}_run_${i + 1}`;
         await runAllQueries(clusterName0, `Run ${i + 1}/3 times`, campaignId);
