@@ -75,7 +75,7 @@ const showMenu = async () => {
         return;
       }
       for (let i = 0; i < 3; i++) {
-        const campaignId = `phase5_official_${clusterName0}_run_${i + 1}`;
+        const campaignId = `official_phase5_${clusterName0}_run_${i + 1}`;
         await runAllQueries(clusterName0, `Run ${i + 1}/3 times`, campaignId);
       }
       break;
