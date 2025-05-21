@@ -12,6 +12,10 @@ import {
   askForQueryPatterns,
 } from "src/test-runner/prompt";
 
+// Get params from command line
+const args = process.argv.slice(2);
+console.log(args);
+
 const showMenu = async () => {
   const choices = [
     {
@@ -63,10 +67,15 @@ const showMenu = async () => {
       break;
     case "run-all-queries-3-times":
       console.log("Running all queries 3 times...");
-      // const clusterName0 = await askForClusterName();
-      const clusterName0 = "ra3.large_x3nodes";
-      for (let i = 0; i < 1; i++) {
-        const campaignId = `old_query_3_official_${clusterName0}_run_${i + 1}`;
+      const clusterName0 = args[0] || "";
+      if (!clusterName0) {
+        console.error(
+          "Please provide a cluster name: yarn start <cluster-name>"
+        );
+        return;
+      }
+      for (let i = 0; i < 3; i++) {
+        const campaignId = `phase5_official_${clusterName0}_run_${i + 1}`;
         await runAllQueries(clusterName0, `Run ${i + 1}/3 times`, campaignId);
       }
       break;
