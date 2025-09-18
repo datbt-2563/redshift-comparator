@@ -47,16 +47,14 @@ const showMenu = async () => {
       value: "exit",
     },
   ];
-  // const response = await prompts({
-  //   type: "select",
-  //   name: "value",
-  //   message: "Choose an action",
-  //   choices,
-  // });
+  const response = await prompts({
+    type: "select",
+    name: "value",
+    message: "Choose an action",
+    choices,
+  });
 
-  // const { value } = response;
-
-  let value = "run-all-queries-3-times";
+  const { value } = response;
 
   switch (value) {
     case "run-all-queries":

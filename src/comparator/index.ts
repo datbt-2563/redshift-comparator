@@ -10,7 +10,7 @@ import {
 } from "src/test-runner/prompt";
 import { runQueries, TestCase } from "src/test-runner/runner";
 
-const CLUSTER_NAME = "ra3.large_x3nodes";
+const CLUSTER_NAME = "ra3.large_x6nodes";
 
 export const runAliasQueryAndCompare = async (
   aliases: string[],
